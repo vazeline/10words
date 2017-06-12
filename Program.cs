@@ -39,6 +39,7 @@ namespace FindWords
         private const int MAX_LENGHT = 1000; //макс. длина слов - можно меньше, тк таких слов не бывает
         private const int MAX_THREADS = 100; // для установки вручную кол-ва используемых потоков 
         private const int LINES_BUFFER = 20; // размер буфера строк из потока файла
+        private const int THREAD_START_RANGE = 10;
 
         private static int hunksInWork = 0;
 
@@ -86,7 +87,7 @@ namespace FindWords
             Console.WriteLine("папка: " + folder);
             Console.WriteLine("процессоры: " + Environment.ProcessorCount);
             Console.WriteLine($"память: {memory:N0} Mb");
-
+            _search = GetSearchStrategy();
             #endregion
 
             Console.WriteLine("================ work ==============");
@@ -135,7 +136,7 @@ namespace FindWords
                             filesData[thread].Enqueue(sblines);
                             Interlocked.Increment(ref hunksInWork);
 
-                            if ((filenames.Length < 5 && threads==0 || threadPooling % 50 == 0 && hunksInWork >= prevFilesCheck + 50) 
+                            if ((threads == 0 || threadPooling % THREAD_START_RANGE == 0 && hunksInWork >= prevFilesCheck + THREAD_START_RANGE) 
                                 && threads < MAX_THREADS && threads < Environment.ProcessorCount)
                             {
                                 prevFilesCheck = hunksInWork;
@@ -201,7 +202,6 @@ namespace FindWords
         {
             var words = new Dictionary<string, int>();
 
-            _search = GetSearchStrategy();
             int thread = 0;
             string line;
             while (thread < filesData.Count)
@@ -232,7 +232,7 @@ namespace FindWords
             int thread = 0;
             if(num is int)
                 thread = (int) num;
-            threadsOrder.Enqueue($"begin thread, milisec: {_stopwatch.ElapsedMilliseconds} linesInWork: {hunksInWork}");
+            threadsOrder.Enqueue($"begin thread{thread}, milisec: {_stopwatch.ElapsedMilliseconds} linesInWork: {hunksInWork}");
 
             _search = GetSearchStrategy();
 
@@ -264,7 +264,7 @@ namespace FindWords
                     threadsEnded.Set();
             }
 
-            threadsOrder.Enqueue($"  end thread: milisec: {_stopwatch.ElapsedMilliseconds} linesInWork: {hunksInWork} spins: {sw.Count} thread lines: {threadLines}");
+            threadsOrder.Enqueue($"  end thread{thread}: milisec: {_stopwatch.ElapsedMilliseconds} linesInWork: {hunksInWork} spins: {sw.Count} thread lines: {threadLines}");
         }
 
         private static void AddWords(Dictionary<string, int> words)

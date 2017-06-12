@@ -11,7 +11,7 @@ namespace FindWords
             regex = new Regex(@"\w{" + minlen + "," + maxlen + "}", RegexOptions.Compiled);
         }
 
-        public void SearchInFile(string content, string filename, IDictionary<string, int> words)
+        public void SearchInFile(string content, IDictionary<string, int> words)
         {
             var matches = regex.Matches(content);
             foreach (Match match in matches)

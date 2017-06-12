@@ -4,6 +4,6 @@ namespace FindWords
 {
     interface ISearchStrategy
     {
-        void SearchInFile(string content, string filename, IDictionary<string, int> words);
+        void SearchInFile(string content, IDictionary<string, int> words);
     }
 }

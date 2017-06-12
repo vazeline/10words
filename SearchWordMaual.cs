@@ -15,7 +15,7 @@ namespace FindWords
             _maxLength = maxlen;
         }
 
-        public unsafe void SearchInFile(string content, string filename, IDictionary<string, int> words)
+        public unsafe void SearchInFile(string content, IDictionary<string, int> words)
         {
             StringBuilder bigWord = new StringBuilder(_maxLength);
             fixed (char* chrs = content)
@@ -33,7 +33,7 @@ namespace FindWords
                             if (wlen >= _maxLength) //ошибка ?
                             {
                                 bigWord.Clear();
-                                Console.WriteLine("ошибка в файле " + filename);
+                                Console.WriteLine("ошибка в файле ");
                                 break;
                             }
 

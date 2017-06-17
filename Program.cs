@@ -150,7 +150,7 @@ namespace FindWords
                 readingFiles = false;
                 if (filenames.Any())
                     threadsEnded.Wait();
-                if (filesData.Any(x=>x.IsEmpty)) // мб с небольшой вероятностью
+                if (filesData.Any(x=>!x.IsEmpty)) // мб с небольшой вероятностью
                     SearchWords();
             }
 
